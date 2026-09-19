@@ -21,8 +21,7 @@ static size_t count_lines(FILE *file) {
 }
 
 int main(int argc, char *argv[]) {
-    //const char *path = (argc > 1) ? argv[1] : "data/events.log";
-    //que vaut path ?
+    const char *path = (argc > 1) ? argv[1] : "data/events.log";
     FILE *file = fopen(path, "r");
 
     if (file == NULL) {
