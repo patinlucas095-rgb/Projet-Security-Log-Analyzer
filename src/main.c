@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "analyzer.h"
 #include "parser.h"
 #include "report.h"
@@ -21,20 +20,17 @@ static size_t count_lines(FILE *file) {
 }
 
 int main(int argc, char *argv[]) {
-    /* Prend le fichier en argument, sinon par defaut data/events.log */
     const char *path = (argc > 1) ? argv[1] : "data/events.log";
-    
-    FILE *file = fopen(path, "r");
 
+    FILE *file = fopen(path, "r");
     if (file == NULL) {
         printf("Erreur : impossible d'ouvrir %s\n", path);
         return EXIT_FAILURE;
     }
 
-    /* Capacite maximale = nombre de lignes du fichier */
     size_t capacity = count_lines(file);
-    Analyzer analyzer;
 
+    Analyzer analyzer;
     if (!analyzer_init(&analyzer, capacity)) {
         printf("Erreur d'allocation memoire.\n");
         fclose(file);
@@ -48,7 +44,6 @@ int main(int argc, char *argv[]) {
     while (fgets(line, sizeof(line), file) != NULL) {
         analyzer.total_lines++;
 
-        /* Appel a TON fichier parser.c */
         if (parse_log_line(line, &entry)) {
             if (!analyzer_process_entry(&analyzer, &entry)) {
                 printf("Erreur pendant l'analyse d'une ligne.\n");
@@ -61,7 +56,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* Appel a TON fichier report.c */
     print_report(&analyzer);
 
     analyzer_free(&analyzer);
